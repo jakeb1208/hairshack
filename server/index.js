@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import db from './db.js';
+import pool, { initDb } from './db.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -17,42 +17,65 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // GET all content
-app.get('/api/content', (req, res) => {
-  const rows = db.prepare('SELECT key, value FROM content').all();
-  const content = {};
-  for (const row of rows) {
-    content[row.key] = row.value;
+app.get('/api/content', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT key, value FROM content');
+    const content = {};
+    for (const row of rows) {
+      content[row.key] = row.value;
+    }
+    res.json(content);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
   }
-  res.json(content);
 });
 
-// PUT update a content key
-app.put('/api/content/:key', (req, res) => {
+// PUT update a single key
+app.put('/api/content/:key', async (req, res) => {
   const { key } = req.params;
   const { value } = req.body;
   if (value === undefined) return res.status(400).json({ error: 'value required' });
-  db.prepare(
-    'INSERT INTO content (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP'
-  ).run(key, value);
-  res.json({ ok: true });
+  try {
+    await pool.query(
+      `INSERT INTO content (key, value)
+       VALUES ($1, $2)
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+      [key, String(value)]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // PUT update multiple keys at once
-app.put('/api/content', (req, res) => {
+app.put('/api/content', async (req, res) => {
   const updates = req.body;
   if (!updates || typeof updates !== 'object') {
     return res.status(400).json({ error: 'Expected object of key:value pairs' });
   }
-  const upsert = db.prepare(
-    'INSERT INTO content (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP'
-  );
-  const updateMany = db.transaction((pairs) => {
-    for (const [key, value] of Object.entries(pairs)) {
-      upsert.run(key, String(value));
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (const [key, value] of Object.entries(updates)) {
+      await client.query(
+        `INSERT INTO content (key, value)
+         VALUES ($1, $2)
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+        [key, String(value)]
+      );
     }
-  });
-  updateMany(updates);
-  res.json({ ok: true });
+    await client.query('COMMIT');
+    res.json({ ok: true });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  } finally {
+    client.release();
+  }
 });
 
 // Fallback for SPA in production
@@ -62,6 +85,14 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`Hair Shack API running on port ${PORT}`);
-});
+// Init DB then start server
+initDb()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Hair Shack API running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to initialise database:', err);
+    process.exit(1);
+  });

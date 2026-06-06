@@ -1,18 +1,17 @@
-import Database from 'better-sqlite3';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import pg from 'pg';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const dbPath = process.env.DB_PATH || join(__dirname, '../hairshack.db');
-const db = new Database(dbPath);
+const { Pool } = pg;
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS content (
-    key TEXT PRIMARY KEY,
-    value TEXT NOT NULL,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+if (!process.env.DATABASE_URL) {
+  console.warn('WARNING: DATABASE_URL is not set. Database will not connect.');
+}
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: false }
+    : false,
+});
 
 const defaults = {
   'hero.title': 'The Hair Shack',
@@ -45,12 +44,25 @@ const defaults = {
   'services.5.price': '$13',
 };
 
-const insertDefault = db.prepare(
-  'INSERT OR IGNORE INTO content (key, value) VALUES (?, ?)'
-);
+export async function initDb() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS content (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
 
-for (const [key, value] of Object.entries(defaults)) {
-  insertDefault.run(key, value);
+  for (const [key, value] of Object.entries(defaults)) {
+    await pool.query(
+      `INSERT INTO content (key, value)
+       VALUES ($1, $2)
+       ON CONFLICT (key) DO NOTHING`,
+      [key, value]
+    );
+  }
+
+  console.log('Database ready.');
 }
 
-export default db;
+export default pool;
