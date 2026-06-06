@@ -34,14 +34,15 @@ export default function Contact({ content }) {
                 value: content?.['contact.address'] || '4061 LA-59, Mandeville, LA 70471',
               },
               {
-                icon: '📞',
-                label: 'Phone',
-                value: content?.['contact.phone'] || '(985) 555-0100',
-              },
-              {
                 icon: '🕐',
                 label: 'Hours',
-                value: content?.['contact.hours'] || 'Mon–Sat: 9am – 6pm  |  Sun: Closed',
+                value: (
+                  <div>
+                    <div style={{ color: 'var(--text-light)', marginBottom: '0.15rem' }}>Monday: Closed</div>
+                    <div>Tuesday – Saturday: 9am – 6pm</div>
+                    <div style={{ color: 'var(--text-light)', marginTop: '0.15rem' }}>Sunday: Closed</div>
+                  </div>
+                ),
               },
             ].map(item => (
               <div key={item.label} style={{

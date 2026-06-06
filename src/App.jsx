@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react'
 import { useContent } from './hooks/useContent'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import Services from './components/Services'
 import About from './components/About'
 import Reviews from './components/Reviews'
 import Contact from './components/Contact'
@@ -37,7 +36,6 @@ export default function App() {
       <Nav content={content} onBannerClick={handleBannerClick} />
       <main>
         <Hero content={content} />
-        <Services content={content} />
         <About content={content} />
         <Reviews />
         <Contact content={content} />

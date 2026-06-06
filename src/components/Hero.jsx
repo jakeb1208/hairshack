@@ -24,14 +24,6 @@ export default function Hero({ content }) {
         pointerEvents: 'none',
       }} />
 
-      {/* Decorative scissor pattern */}
-      <div style={{
-        position: 'absolute', right: '8%', top: '50%', transform: 'translateY(-50%)',
-        fontSize: '18rem', opacity: 0.035, color: 'var(--red)',
-        fontFamily: 'sans-serif', lineHeight: 1,
-        pointerEvents: 'none', userSelect: 'none',
-      }}>✂</div>
-
       <div style={{
         maxWidth: 1200, margin: '0 auto', padding: '8rem 2rem 5rem',
         width: '100%',
@@ -120,7 +112,7 @@ export default function Hero({ content }) {
           <div style={{
             marginTop: '3rem', display: 'flex', gap: '2.5rem',
           }}>
-            {[['20+', 'Years Open'], ['106', 'Reviews'], ['4.9★', 'Rating']].map(([num, label]) => (
+            {[['20+', 'Years Open'], ['4.9★', 'Rating']].map(([num, label]) => (
               <div key={label}>
                 <div style={{
                   fontFamily: 'var(--font-serif)', fontSize: '2rem',

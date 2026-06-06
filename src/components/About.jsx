@@ -38,19 +38,6 @@ export default function About({ content }) {
             <div style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>
               Master Barbers · Mandeville, LA
             </div>
-            <div style={{
-              marginTop: '1.5rem', display: 'flex', justifyContent: 'center', gap: '2rem',
-            }}>
-              {[['20+', 'Years'], ['5,000+', 'Clients'], ['4.9★', 'Rating']].map(([n, l]) => (
-                <div key={l} style={{ textAlign: 'center' }}>
-                  <div style={{
-                    fontFamily: 'var(--font-serif)', fontSize: '1.5rem',
-                    fontWeight: 700, color: 'var(--red)',
-                  }}>{n}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{l}</div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 
