@@ -8,7 +8,6 @@ export default function Hero({ content }) {
       position: 'relative', overflow: 'hidden',
       background: 'linear-gradient(135deg, #fff 0%, #fff5f5 50%, #fafafa 100%)',
     }}>
-      {/* Background orbs */}
       <div style={{
         position: 'absolute', top: '10%', right: '5%',
         width: 500, height: 500, borderRadius: '50%',
@@ -70,22 +69,6 @@ export default function Hero({ content }) {
           </p>
 
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <a
-              href="#contact"
-              style={{
-                background: 'var(--red)', color: '#fff',
-                padding: '0.9rem 2rem', borderRadius: 8,
-                fontSize: '1rem', fontWeight: 700,
-                boxShadow: 'var(--shadow-glow)',
-                animation: 'glow-pulse 3s ease infinite',
-                transition: 'transform 0.2s',
-                display: 'inline-block',
-              }}
-              onMouseEnter={e => e.target.style.transform = 'translateY(-2px)'}
-              onMouseLeave={e => e.target.style.transform = 'translateY(0)'}
-            >
-              {content?.['hero.cta'] || 'Book Your Cut'}
-            </a>
             <a
               href="#reviews"
               style={{

@@ -3,6 +3,7 @@ import { useContent } from './hooks/useContent'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import About from './components/About'
+import PhotoCarousel from './components/PhotoCarousel'
 import Reviews from './components/Reviews'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
@@ -37,6 +38,7 @@ export default function App() {
       <main>
         <Hero content={content} />
         <About content={content} />
+        <PhotoCarousel />
         <Reviews />
         <Contact content={content} />
       </main>
