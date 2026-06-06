@@ -1,47 +1,68 @@
-import styles from './Footer.module.css'
-
-export default function Footer() {
+export default function Footer({ content }) {
   return (
-    <footer className={styles.footer}>
-      <div className={styles.container}>
-        <div className={styles.top}>
-          <div className={styles.brand}>
-            <h3 className={styles.logo}>The Hair Shack</h3>
-            <p className={styles.tagline}>Where Style Meets Perfection</p>
-            <div className={styles.socials}>
-              <a href="#" aria-label="Instagram">📷</a>
-              <a href="#" aria-label="Facebook">📘</a>
-              <a href="#" aria-label="TikTok">🎵</a>
+    <footer style={{
+      background: 'var(--text-dark)',
+      color: 'rgba(255,255,255,0.7)',
+      padding: '3rem 2rem 1.5rem',
+    }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '2fr 1fr 1fr',
+          gap: '3rem', paddingBottom: '2.5rem',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          marginBottom: '1.5rem',
+        }}>
+          <div>
+            <div style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: '1.5rem', fontWeight: 700,
+              color: 'var(--red-light)', marginBottom: '0.75rem',
+              textShadow: '0 0 20px rgba(229,57,53,0.4)',
+            }}>
+              {content?.['business.name'] || 'The Hair Shack'}
             </div>
+            <p style={{ fontSize: '0.9rem', lineHeight: 1.7, maxWidth: 280 }}>
+              Your trusted neighborhood barber shop in Mandeville, LA. Proudly serving the community for over 20 years.
+            </p>
           </div>
-          <div className={styles.col}>
-            <h4>Quick Links</h4>
-            <ul>
-              <li><a href="#services">Services</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#gallery">Gallery</a></li>
-              <li><a href="#booking">Book Now</a></li>
+          <div>
+            <h4 style={{
+              color: '#fff', fontSize: '0.8rem',
+              fontWeight: 700, letterSpacing: '0.12em',
+              textTransform: 'uppercase', marginBottom: '1rem',
+            }}>Quick Links</h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {[['Services', '#services'], ['About', '#about'], ['Reviews', '#reviews'], ['Contact', '#contact']].map(([l, h]) => (
+                <li key={l}><a href={h} style={{
+                  fontSize: '0.9rem',
+                  transition: 'color 0.2s',
+                }}
+                  onMouseEnter={e => e.target.style.color = '#ff6b6b'}
+                  onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+                >{l}</a></li>
+              ))}
             </ul>
           </div>
-          <div className={styles.col}>
-            <h4>Contact</h4>
-            <ul>
-              <li>123 Main Street, Your Town</li>
-              <li><a href="tel:+15550001234">(555) 000-1234</a></li>
-              <li><a href="mailto:hello@thehairshack.com">hello@thehairshack.com</a></li>
-            </ul>
-          </div>
-          <div className={styles.col}>
-            <h4>Hours</h4>
-            <ul>
-              <li>Mon – Fri: 9am – 7pm</li>
-              <li>Saturday: 9am – 7pm</li>
-              <li>Sunday: 10am – 5pm</li>
+          <div>
+            <h4 style={{
+              color: '#fff', fontSize: '0.8rem',
+              fontWeight: 700, letterSpacing: '0.12em',
+              textTransform: 'uppercase', marginBottom: '1rem',
+            }}>Contact</h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.9rem' }}>
+              <li>{content?.['contact.address'] || '4061 LA-59, Mandeville, LA 70471'}</li>
+              <li><a href="tel:+1" style={{ transition: 'color 0.2s' }}
+                onMouseEnter={e => e.target.style.color = '#ff6b6b'}
+                onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+              >{content?.['contact.phone'] || '(985) 555-0100'}</a></li>
+              <li style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                {content?.['contact.hours'] || 'Mon–Sat: 9am – 6pm'}
+              </li>
             </ul>
           </div>
         </div>
-        <div className={styles.bottom}>
-          <p>© {new Date().getFullYear()} The Hair Shack. All rights reserved.</p>
+        <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)' }}>
+          © {new Date().getFullYear()} {content?.['business.name'] || 'The Hair Shack'}. All rights reserved.
         </div>
       </div>
     </footer>
