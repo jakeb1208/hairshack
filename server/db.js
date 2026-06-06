@@ -42,6 +42,12 @@ const defaults = {
   'services.5.name': 'Senior Cut',
   'services.5.desc': 'Comfortable, quality haircuts for our senior clients.',
   'services.5.price': '$13',
+  'photo.0': '',
+  'photo.1': '',
+  'photo.2': '',
+  'photo.3': '',
+  'photo.4': '',
+  'photo.5': '',
 };
 
 export async function initDb() {

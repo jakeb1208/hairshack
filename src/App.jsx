@@ -38,7 +38,7 @@ export default function App() {
       <main>
         <Hero content={content} />
         <About content={content} />
-        <PhotoCarousel />
+        <PhotoCarousel photos={content} />
         <Reviews />
         <Contact content={content} />
       </main>
